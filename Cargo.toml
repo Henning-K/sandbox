@@ -1,0 +1,13 @@
+[package]
+name = "sandbox"
+version = "0.1.0"
+authors = ["Henning Kowalk <henning.kowalk962@web.de>"]
+
+[[bin]]
+name = "sandbox"
+
+[lib]
+name = "sandbox"
+
+[dependencies]
+hyper = "0.9.*"
