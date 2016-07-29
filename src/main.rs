@@ -14,9 +14,7 @@ fn main() {
                      delight in the continued and indefatigable generation of knowledge, exceeds \
                      the short vehemence of any carnal pleasure.";
 
-    println!("String: {}
-    Encoded: {}",
+    println!("String: {}\nEncoded: {}",
              leviathan,
              base64::encode(leviathan));
-
 }
