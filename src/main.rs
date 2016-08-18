@@ -1,11 +1,8 @@
 extern crate sandbox;
 
-use sandbox::networking_tests;
 use sandbox::base64;
 
 fn main() {
-    println!("{}", networking_tests::testing_output());
-
     let man = "Man";
     println!("String: {}\nEncoded: {}", man, base64::encode(man));
 

@@ -10,4 +10,3 @@ name = "sandbox"
 name = "sandbox"
 
 [dependencies]
-#hyper = "0.9.*"

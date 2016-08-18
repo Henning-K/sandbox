@@ -1,6 +1,7 @@
 This is a sandbox for me trying out stuff in the Rust programming language.
-The stuff that works and may be used in the future will be transferred to the
+The stuff that works and may be used by me in the future will be transferred to the
 `perm_util` module.
 
-The first thing I'll try out here is the networking_tests module trying to
-download stuff and so on.
+Tried out the base64 en- and decoding, I'll maybe implement it in another way some time
+in the near future, e.g. as a trait implemented on String and str. And when that works
+I'll maybe transfer it into the perm_util module.
