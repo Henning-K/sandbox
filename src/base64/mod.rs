@@ -108,14 +108,6 @@ pub fn decode(inp: &str) -> String {
         bit_string >>= 8;
         let octet0 = (bit_string & 0xFF) as u8;
 
-        // let octet2 = (bit_string & 0xff) as u8;
-        // bit_string >>= 8;
-        // let octet1 = (bit_string & 0xff) as u8;
-        // bit_string >>= 8;
-        // let octet0 = (bit_string & 0xff) as u8;
-        println!("{:X} {:X} {:X}", octet0, octet1, octet2);
-
-
         let (octet0, octet1, octet2) = (octet0 as char, octet1 as char, octet2 as char);
 
         result = match (octet1, octet2) {
