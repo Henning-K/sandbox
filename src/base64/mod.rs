@@ -19,11 +19,13 @@ pub fn encode(inp: &str) -> String {
         }); // look if any of the elements is None and if so flip the bool switch so the loop will be broken out of after some final tasks.
 
         let mut bit_string = 0u32;
-        for i in 0..2 {
-            bit_string = bit_string | triplet[i].unwrap_or(0u32); // unwrap_or(some_value) unwraps the Option/Result and returns the value of Some(_) or the default some_value.
-            bit_string <<= 8;
+        for (i, item) in triplet.iter().map(|e| e.unwrap_or(0u32)).enumerate() {
+            // unwrap_or(some_value) unwraps the Option/Result and returns the value of Some(_) or the default some_value.
+            bit_string |= item;
+            if i != 2 {
+                bit_string <<= 8;
+            }
         }
-        bit_string = bit_string | triplet[2].unwrap_or(0u32);
 
         let sextet3 = (bit_string & 0x3F) as usize;
         bit_string >>= 6;
@@ -86,11 +88,10 @@ pub fn decode(inp: &str) -> String {
         let quartet = quartet_.iter().map(|e| (*e).unwrap_or(0u8)).collect::<Vec<u8>>();
 
         let mut bit_string = 0u32;
-        for i in 0..4 {
-            bit_string = bit_string |
-                         base64_index.iter()
-                                     .position(|&x| x == (quartet[i] as char))
-                                     .unwrap_or(0usize) as u32;
+        for (i, item) in quartet.iter().enumerate() {
+            bit_string |= base64_index.iter()
+                                      .position(|&x| x == (*item as char))
+                                      .unwrap_or(0usize) as u32;
             if i != 3 {
                 bit_string <<= 6;
             }

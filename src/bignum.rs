@@ -1,17 +1,16 @@
 use std::ops::{Add, Mul};
-use std::iter;
 use std::fmt;
 
 
 // TODO: read up on research related to BigNum handling etc.
-// TODO: implement Mul for BigUInt, probably after pondering the redesign.
+// TODO: implement Mul for `BigUInt`, probably after pondering the redesign.
 // TODO: implement From trait for conversions from u8-u64.
 // TODO: ponder whether specific errors are needed.
-// TODO: maybe rethink design so that BigUInt can implement Copy, i.e. make different versions as wrappers around differing quantities of u64's, e.g. BigU128, BigU256 etc.
+// TODO: maybe rethink design so that `BigUInt` can implement Copy, i.e. make different versions as wrappers around differing quantities of u64's, e.g. BigU128, BigU256 etc.
 
 
-/// BigUInt is a wrapper around a vector of the digits of a number in reverse order
-#[derive(Debug, Clone, PartialEq)]
+/// `BigUInt` is a wrapper around a vector of the digits of a number in reverse order
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct BigUInt(Vec<u8>);
 
 impl BigUInt {
@@ -19,8 +18,8 @@ impl BigUInt {
         BigUInt(Vec::new())
     }
 
-    pub fn from_buf(buf: Vec<u8>) -> Self {
-        BigUInt(buf)
+    pub fn from_buf(buf: &[u8]) -> Self {
+        BigUInt(Vec::from(buf))
     }
 
     pub fn size(&self) -> usize {
@@ -32,29 +31,25 @@ impl BigUInt {
             self.0.pop();
         }
     }
-
-    pub fn add_leading_zeroes(&mut self, n: usize) {
-        self.0.extend(iter::repeat(0u8).take(n));
-    }
 }
 
-/// implementing Add so we can use the + operator for BigUInt
+/// implementing Add so we can use the + operator for `BigUInt`
 impl Add for BigUInt {
-    /// Adding the BigUInt to another BigUInt produces a BigUInt.
+    /// Adding the `BigUInt` to another `BigUInt` produces a `BigUInt`.
     type Output = Self;
 
     /// The method for the + operator
     fn add(self, other: Self) -> Self {
-        let mut temp1 = self.clone();
-        let mut temp2 = other.clone();
+        let mut temp1 = self.0.clone();
+        let mut temp2 = other.0.clone();
         let (tuple_list, longest_length) = match (self.size(), other.size()) {
             (i, j) if i < j => {
-                temp1.add_leading_zeroes(j - i);
-                (temp1.0.iter().zip(other.0), j)
+                temp1.resize(j, 0u8);
+                (temp1.iter().zip(other.0), j)
             }
             (i, j) if i > j => {
-                temp2.add_leading_zeroes(i - j);
-                (temp2.0.iter().zip(self.0), i)
+                temp2.resize(i, 0u8);
+                (temp2.iter().zip(self.0), i)
             }
             (i, _) => (self.0.iter().zip(other.0), i),
         };
@@ -67,11 +62,11 @@ impl Add for BigUInt {
             carry = temp / 10u8;
         }
 
-        BigUInt::from_buf(result)
+        BigUInt::from_buf(&result)
     }
 }
 
-/// implementing Mul so that we can actually use the BigUInt type for arithmetic
+/// implementing Mul so that we can actually use the `BigUInt` type for arithmetic
 impl Mul for BigUInt {
     type Output = Self;
 
@@ -102,9 +97,9 @@ mod tests {
 
     #[test]
     fn creation() {
-        // create a new empty BigUInt
+        // create a new empty `BigUInt`
         let biguint1 = BigUInt::new();
-        let biguint2 = BigUInt::from_buf(vec![0u8;2]);
+        let biguint2 = BigUInt::from_buf(&vec![0u8;2]);
 
         assert_eq!(biguint1, BigUInt(Vec::new()));
         assert_eq!(biguint2, BigUInt(vec![0u8, 0u8]));
@@ -113,7 +108,7 @@ mod tests {
     #[test]
     fn addition() {
         let biguint1 = BigUInt::new(); // 0
-        let biguint2 = BigUInt::from_buf(vec![2u8, 1]); // 0+12
+        let biguint2 = BigUInt::from_buf(&vec![2u8, 1]); // 0+12
 
         assert_eq!("0", format!("{}", biguint1));
         assert_eq!("12", format!("{}", biguint2));
