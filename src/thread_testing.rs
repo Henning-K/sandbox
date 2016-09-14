@@ -2,15 +2,15 @@ extern crate num_cpus;
 
 use std::thread;
 
-pub fn thread_test() -> Result<(), &str> {
+pub fn thread_test() -> Result<(), String> {
     let handle = thread::spawn(|| {
         // println!("Single thread spawned.");
     });
 
-    handle.join().map_err(|err| "Error joining thread.").and_then(|_| Ok(()))
+    handle.join().map_err(|_| "Error joining thread.".to_string()).and_then(|_| Ok(()))
 }
 
-pub fn n_threads(n: usize) -> Result<(), &str> {
+pub fn n_threads(n: usize) -> Result<(), String> {
     let mut handles = Vec::with_capacity(n);
     for _ in 0..n {
         let handle = thread::spawn(move || {
@@ -24,7 +24,7 @@ pub fn n_threads(n: usize) -> Result<(), &str> {
     Ok(())
 }
 
-pub fn cpu_count_threads() -> Result<(), &str> {
+pub fn cpu_count_threads() -> Result<(), String> {
     let cpu_count = num_cpus::get();
     println!("CPU count: {}", cpu_count);
     let mut handles = Vec::with_capacity(cpu_count);
@@ -42,7 +42,7 @@ pub fn cpu_count_threads() -> Result<(), &str> {
 
 use std::sync::{Arc, Mutex};
 
-pub fn mutating_threads() -> Result<(), &str> {
+pub fn mutating_threads() -> Result<(), String> {
     const N: usize = 1000;
     let mut handles = Vec::with_capacity(N);
     let data = Arc::new(Mutex::new((0..N).collect::<Vec<usize>>()));
@@ -58,11 +58,32 @@ pub fn mutating_threads() -> Result<(), &str> {
 
     for h in handles {
         if let Err(_) = h.join() {
-            return Err("Joining child thread returned an error.");
+            return Err("Joining child thread returned an error.".to_string());
         }
-
-        Ok(())
     }
+    Ok(())
+}
+
+use std::sync::mpsc;
+
+pub fn channels_threads() -> Result<(), String> {
+    let (tx, rx) = mpsc::channel();
+
+    for i in 0..10 {
+        let tx = tx.clone();
+
+        thread::spawn(move || {
+            let answer = i * i;
+
+            tx.send(answer).expect("Error sending over channel");
+        });
+    }
+
+    for _ in 0..10 {
+        println!("{}", rx.recv().expect("Error receiving over channel"));
+    }
+
+    Ok(())
 }
 
 #[cfg(test)]
@@ -90,5 +111,10 @@ mod tests {
     #[test]
     fn mutating_threads_test() {
         assert_eq!(mutating_threads(), Ok(()));
+    }
+
+    #[test]
+    fn channels_test() {
+        assert_eq!(channels_threads(), Ok(()));
     }
 }
