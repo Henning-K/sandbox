@@ -110,8 +110,8 @@ mod tests {
         let biguint1 = BigUInt::new(); // 0
         let biguint2 = BigUInt::from_buf(&vec![2u8, 1]); // 0+12
 
-        assert_eq!("0", format!("{}", biguint1));
-        assert_eq!("12", format!("{}", biguint2));
+        assert_eq!("0", format!("{}", &biguint1));
+        assert_eq!("12", format!("{}", &biguint2));
         assert_eq!("12", format!("{}", biguint1.clone() + biguint2.clone()));
         assert_eq!("24", format!("{}", biguint2.clone() + biguint2.clone()));
     }

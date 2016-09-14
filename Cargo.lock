@@ -1,4 +1,23 @@
 [root]
 name = "sandbox"
 version = "0.1.0"
+dependencies = [
+ "num_cpus 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
+[[package]]
+name = "libc"
+version = "0.2.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "num_cpus"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.2.16 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[metadata]
+"checksum libc 0.2.16 (registry+https://github.com/rust-lang/crates.io-index)" = "408014cace30ee0f767b1c4517980646a573ec61a57957aeeabcac8ac0a02e8d"
+"checksum num_cpus 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a859041cbf7a70ea1ece4b87d1a2c6ef364dcb68749c88db1f97304b9ec09d5f"

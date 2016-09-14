@@ -10,3 +10,4 @@ name = "sandbox"
 name = "sandbox"
 
 [dependencies]
+num_cpus = "1.0.0"
